@@ -21,7 +21,7 @@ export function ServiceCard({
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/5 opacity-0 transition group-hover:opacity-100" />
       <CardHeader className="relative mb-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.07] text-primary">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface/80 text-primary">
             <Icon className="h-5 w-5" />
           </div>
           <Badge variant="neutral">{service.slug.replace(/-/g, ' ')}</Badge>

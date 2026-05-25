@@ -13,7 +13,7 @@ export function TableBody({ className, ...props }: React.HTMLAttributes<HTMLTabl
 }
 
 export function TableRow({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) {
-  return <tr className={cn('transition-colors hover:bg-white/[0.04]', className)} {...props} />;
+  return <tr className={cn('transition-colors hover:bg-surface-2/70', className)} {...props} />;
 }
 
 export function TableHeadCell({ className, ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) {
@@ -21,5 +21,5 @@ export function TableHeadCell({ className, ...props }: React.ThHTMLAttributes<HT
 }
 
 export function TableCell({ className, ...props }: React.TdHTMLAttributes<HTMLTableCellElement>) {
-  return <td className={cn('bg-white/[0.03] px-4 py-4 text-sm text-foreground first:rounded-l-2xl last:rounded-r-2xl', className)} {...props} />;
+  return <td className={cn('bg-surface/70 px-4 py-4 text-sm text-foreground first:rounded-l-2xl last:rounded-r-2xl', className)} {...props} />;
 }

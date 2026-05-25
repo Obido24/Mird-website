@@ -7,6 +7,7 @@ import { MidrLogo } from '@/components/brand/midr-logo';
 import { brandStory, siteNav } from '@/lib/public-content';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 export function SiteShell({
   children,
@@ -19,7 +20,7 @@ export function SiteShell({
 
   return (
     <div className={cn('min-h-screen bg-background text-foreground', className)}>
-      <header className="sticky top-0 z-40 border-b border-white/5 bg-background/80 shell-blur">
+      <header className="sticky top-0 z-40 border-b border-line/40 bg-background/80 shell-blur">
         <div className="container-grid flex items-center justify-between py-4">
           <Link href="/" className="flex items-center">
             <MidrLogo className="h-8 w-auto max-w-[116px] sm:h-9 sm:max-w-[132px]" priority />
@@ -32,6 +33,7 @@ export function SiteShell({
             ))}
           </nav>
           <div className="hidden items-center gap-3 sm:flex">
+            <ThemeToggle />
             <Button asChild size="sm">
               <Link href="/contact">Get Started</Link>
             </Button>
@@ -44,7 +46,7 @@ export function SiteShell({
       {menuOpen ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button className="absolute inset-0 bg-black/65" onClick={() => setMenuOpen(false)} aria-label="Close menu" />
-          <div className="absolute right-0 top-0 h-full w-[84vw] max-w-sm border-l border-white/5 bg-surface/95 p-5 shell-blur">
+          <div className="absolute right-0 top-0 h-full w-[84vw] max-w-sm border-l border-line/40 bg-surface/95 p-5 shell-blur">
             <div className="flex items-center justify-between">
               <div>
                 <MidrLogo className="h-8 w-auto max-w-[116px]" />
@@ -53,13 +55,16 @@ export function SiteShell({
                 <X className="h-4 w-4" />
               </Button>
             </div>
+            <div className="mt-4">
+              <ThemeToggle className="w-full" />
+            </div>
             <nav className="mt-6 grid gap-2">
               {siteNav.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-2xl bg-white/5 px-4 py-3 text-sm text-foreground transition hover:bg-white/10"
+                  className="rounded-2xl border border-line/40 bg-surface/70 px-4 py-3 text-sm text-foreground transition hover:bg-surface"
                 >
                   {item.label}
                 </Link>
@@ -76,7 +81,7 @@ export function SiteShell({
         </div>
       ) : null}
       {children}
-      <footer className="border-t border-white/5 bg-surface/80 shell-blur">
+      <footer className="border-t border-line/40 bg-surface/80 shell-blur">
         <div className="container-grid grid gap-10 py-14 md:grid-cols-2 xl:grid-cols-4">
           <div className="space-y-4">
             <MidrLogo className="h-8 w-auto max-w-[120px]" />

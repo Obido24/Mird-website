@@ -14,7 +14,7 @@ export function MotionTicker() {
         {[...items, ...items].map((item, index) => (
           <div
             key={`${item}-${index}`}
-            className="mx-2 flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs uppercase tracking-[0.24em] text-muted"
+            className="mx-2 flex items-center gap-2 rounded-full border border-line/50 bg-surface/80 px-4 py-2 text-xs uppercase tracking-[0.24em] text-muted"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-secondary" />
             {item}

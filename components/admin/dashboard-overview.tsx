@@ -45,7 +45,7 @@ export function DashboardOverview() {
           return (
             <Card key={metric.label} className="relative overflow-hidden">
               <CardHeader className="mb-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.07] text-primary">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface/80 text-primary">
                   <StatIcon className="h-5 w-5" />
                 </div>
                 <Badge variant="neutral">{metric.delta}</Badge>
@@ -107,7 +107,7 @@ export function DashboardOverview() {
               <div key={entry.title} className="relative pl-5">
                 <span className="absolute left-0 top-2 h-2.5 w-2.5 rounded-full bg-primary" />
                 {index < activity.length - 1 ? (
-                  <span className="absolute left-[5px] top-4 h-full w-px bg-white/10" />
+                  <span className="absolute left-[5px] top-4 h-full w-px bg-line/40" />
                 ) : null}
                 <p className="text-xs uppercase tracking-[0.24em] text-muted">{entry.time}</p>
                 <h4 className="mt-2 font-semibold">{entry.title}</h4>

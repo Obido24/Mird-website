@@ -10,21 +10,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#0b0d12',
-        surface: '#111318',
-        'surface-2': '#151922',
-        'surface-3': '#1b2030',
-        'surface-4': '#232a3f',
-        foreground: '#eef1ff',
-        muted: '#a0a7be',
-        line: 'rgba(255,255,255,0.08)',
-        primary: '#a8a6ff',
-        'primary-strong': '#7f7bff',
-        secondary: '#70d7ff',
-        accent: '#9dd6ff',
-        success: '#58d39b',
-        warning: '#ffcc66',
-        danger: '#ff7b8d'
+        background: 'rgb(var(--background) / <alpha-value>)',
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        'surface-2': 'rgb(var(--surface-2) / <alpha-value>)',
+        'surface-3': 'rgb(var(--surface-3) / <alpha-value>)',
+        'surface-4': 'rgb(var(--surface-4) / <alpha-value>)',
+        foreground: 'rgb(var(--foreground) / <alpha-value>)',
+        muted: 'rgb(var(--muted) / <alpha-value>)',
+        line: 'rgb(var(--line) / <alpha-value>)',
+        primary: 'rgb(var(--primary) / <alpha-value>)',
+        'primary-strong': 'rgb(var(--primary-strong) / <alpha-value>)',
+        secondary: 'rgb(var(--secondary) / <alpha-value>)',
+        accent: 'rgb(var(--accent) / <alpha-value>)',
+        success: 'rgb(var(--success) / <alpha-value>)',
+        warning: 'rgb(var(--warning) / <alpha-value>)',
+        danger: 'rgb(var(--danger) / <alpha-value>)'
       },
       borderRadius: {
         xl: '1.25rem',
@@ -32,18 +32,16 @@ const config: Config = {
         '3xl': '2.5rem'
       },
       boxShadow: {
-        glow: '0 18px 70px rgba(168, 166, 255, 0.14)',
-        panel: '0 12px 60px rgba(0, 0, 0, 0.3)'
+        glow: 'var(--glow-shadow)',
+        panel: 'var(--panel-shadow)'
       },
       fontFamily: {
         display: ['var(--font-space-grotesk)', 'sans-serif'],
         body: ['var(--font-inter)', 'sans-serif']
       },
       backgroundImage: {
-        'hero-radial':
-          'radial-gradient(circle at top, rgba(168,166,255,0.18), rgba(11,13,18,0) 48%), radial-gradient(circle at 85% 15%, rgba(112,215,255,0.10), rgba(11,13,18,0) 38%)',
-        'mesh-dark':
-          'linear-gradient(135deg, rgba(168,166,255,0.08), rgba(112,215,255,0.04), rgba(255,255,255,0.02))'
+        'hero-radial': 'var(--hero-radial)',
+        'mesh-dark': 'var(--mesh-dark)'
       }
     }
   },

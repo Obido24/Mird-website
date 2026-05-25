@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { Sparkles } from 'lucide-react';
 import { MidrLogo } from '@/components/brand/midr-logo';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -115,7 +116,10 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-surface px-4 py-12">
+    <main className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-surface px-4 py-12">
+      <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
+        <ThemeToggle />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="flex flex-col items-center text-center">
           <MidrLogo className="mx-auto h-14 w-auto max-w-[190px]" priority />
@@ -123,7 +127,7 @@ export default function AdminLoginPage() {
           <CardDescription className="mt-2 max-w-sm">
             Use the approved MIDR admin email from Firebase Authentication. The password is the one you created in Firebase for that account.
           </CardDescription>
-          <p className="mt-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-muted">
+          <p className="mt-3 rounded-full border border-line/50 bg-surface/80 px-4 py-2 text-xs text-muted">
             Approved email: <span className="text-foreground">{getDefaultAdminEmail()}</span>
           </p>
         </CardHeader>

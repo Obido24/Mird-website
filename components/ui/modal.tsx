@@ -40,8 +40,8 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8">
       <button className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} aria-label="Close modal" />
-      <div className="relative z-10 w-full max-w-3xl rounded-3xl border border-white/10 bg-surface shadow-panel">
-        <div className="flex items-start justify-between gap-4 border-b border-white/5 p-6">
+      <div className="relative z-10 w-full max-w-3xl rounded-3xl border border-line/50 bg-surface shadow-panel">
+        <div className="flex items-start justify-between gap-4 border-b border-line/40 p-6">
           <div>
             <h3 className="headline text-2xl font-semibold">{title}</h3>
             {description ? <p className="mt-2 text-sm leading-6 text-muted">{description}</p> : null}

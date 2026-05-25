@@ -21,7 +21,7 @@ export default function ServicesPage() {
             <Card key={service.slug} id={service.slug} className="overflow-hidden">
               <CardHeader className="items-start">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.07] text-primary">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface/80 text-primary">
                     <Icon className="h-6 w-6" />
                   </div>
                   <div>
@@ -38,7 +38,7 @@ export default function ServicesPage() {
               <CardContent>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {service.features.map((feature) => (
-                    <div key={feature} className="rounded-2xl bg-white/[0.04] p-4 text-sm text-muted">
+                    <div key={feature} className="rounded-2xl border border-line/40 bg-surface/70 p-4 text-sm text-muted">
                       {feature}
                     </div>
                   ))}

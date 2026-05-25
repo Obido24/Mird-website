@@ -38,7 +38,7 @@ export default function AboutPage() {
               <p className="eyebrow mb-3">Values</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {brandStory.values.map((value) => (
-                  <div key={value} className="rounded-2xl bg-white/[0.04] p-4 text-foreground">
+                  <div key={value} className="rounded-2xl border border-line/40 bg-surface/70 p-4 text-foreground">
                     {value}
                   </div>
                 ))}
@@ -55,7 +55,7 @@ export default function AboutPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {homeWhyChoose.map((item) => (
-              <div key={item} className="rounded-2xl bg-white/[0.04] p-4 text-sm text-foreground">
+              <div key={item} className="rounded-2xl border border-line/40 bg-surface/70 p-4 text-sm text-foreground">
                 {item}
               </div>
             ))}
@@ -70,7 +70,7 @@ export default function AboutPage() {
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-3">
             {aboutApproachSteps.map((step, index) => (
-              <div key={step} className="rounded-2xl bg-white/[0.04] p-4">
+              <div key={step} className="rounded-2xl border border-line/40 bg-surface/70 p-4">
                 <p className="headline text-2xl font-semibold">0{index + 1}</p>
                 <p className="mt-2 text-sm leading-7 text-muted">{step}</p>
               </div>

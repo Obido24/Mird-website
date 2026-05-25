@@ -105,7 +105,7 @@ export default function HomePage() {
             </CardHeader>
             <CardContent className="grid gap-3 sm:grid-cols-2">
               {homeDeliverables.map((item) => (
-                <div key={item} className="rounded-2xl bg-white/[0.04] p-4">
+                <div key={item} className="rounded-2xl border border-line/40 bg-surface/70 p-4">
                   <p className="text-sm font-medium">{item}</p>
                 </div>
               ))}

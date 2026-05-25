@@ -50,11 +50,11 @@ export default async function ProjectDetailPage({
             <p>{project.outcome}</p>
           </div>
           <div className="grid gap-3">
-            <div className="rounded-2xl bg-white/[0.04] p-4">
+            <div className="rounded-2xl border border-line/40 bg-surface/70 p-4">
               <p className="text-[11px] uppercase tracking-[0.24em] text-muted">Client</p>
               <p className="mt-2 font-semibold">{project.clientName}</p>
             </div>
-            <div className="rounded-2xl bg-white/[0.04] p-4">
+            <div className="rounded-2xl border border-line/40 bg-surface/70 p-4">
               <p className="text-[11px] uppercase tracking-[0.24em] text-muted">Tags</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {project.tags.map((tag) => (

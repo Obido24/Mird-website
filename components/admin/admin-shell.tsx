@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { LogOut, Menu, Search, Sparkles } from 'lucide-react';
 import { MidrLogo } from '@/components/brand/midr-logo';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { adminNav } from '@/lib/admin-config';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,7 +36,7 @@ export function AdminShell({
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="grid min-h-screen lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="hidden border-r border-white/5 bg-surface/80 shell-blur lg:flex lg:flex-col">
+        <aside className="hidden border-r border-line/40 bg-surface/80 shell-blur lg:flex lg:flex-col">
           <div className="flex items-center gap-3 px-6 py-6">
             <MidrLogo className="h-8 w-auto max-w-[120px]" priority />
           </div>
@@ -47,14 +48,14 @@ export function AdminShell({
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition',
-                      active ? 'bg-white/10 text-white' : 'text-muted hover:bg-white/5 hover:text-white'
-                    )}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {item.label}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition',
+                    active ? 'bg-primary/15 text-foreground' : 'text-muted hover:bg-surface-2 hover:text-foreground'
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.label}
                   </Link>
                 );
               })}
@@ -73,7 +74,7 @@ export function AdminShell({
           </div>
         </aside>
         <div className="flex min-h-screen flex-col">
-          <header className="border-b border-white/5 bg-background/80 shell-blur">
+          <header className="border-b border-line/40 bg-background/80 shell-blur">
             <div className="flex items-center justify-between gap-4 px-4 py-4 lg:px-8">
               <div className="flex items-center gap-3 lg:hidden">
                 <Button variant="ghost" size="sm" onClick={() => setNavOpen(true)}>
@@ -92,6 +93,7 @@ export function AdminShell({
                 </div>
               </div>
               <div className="flex items-center gap-3">
+                <ThemeToggle className="hidden sm:inline-flex" />
                 <Button size="sm" onClick={() => router.push('/admin/projects')}>
                   New Project
                 </Button>
@@ -111,7 +113,7 @@ export function AdminShell({
       {navOpen ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button className="absolute inset-0 bg-black/65" onClick={() => setNavOpen(false)} aria-label="Close navigation" />
-          <div className="absolute left-0 top-0 h-full w-[82vw] max-w-sm border-r border-white/5 bg-surface/95 p-5 shell-blur">
+          <div className="absolute left-0 top-0 h-full w-[82vw] max-w-sm border-r border-line/40 bg-surface/95 p-5 shell-blur">
             <div className="flex items-center justify-between">
               <div>
                 <MidrLogo className="h-8 w-auto max-w-[116px]" />
@@ -120,6 +122,9 @@ export function AdminShell({
                 Close
               </Button>
             </div>
+            <div className="mt-4">
+              <ThemeToggle className="w-full" />
+            </div>
             <nav className="mt-6 grid gap-2">
               {adminNav.map((item) => {
                 const Icon = item.icon;
@@ -127,15 +132,15 @@ export function AdminShell({
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
-                    onClick={() => setNavOpen(false)}
-                    className={cn(
-                      'flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition',
-                      active ? 'bg-white/10 text-white' : 'text-muted hover:bg-white/5 hover:text-white'
-                    )}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {item.label}
+                  href={item.href}
+                  onClick={() => setNavOpen(false)}
+                  className={cn(
+                    'flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition',
+                    active ? 'bg-primary/15 text-foreground' : 'text-muted hover:bg-surface-2 hover:text-foreground'
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.label}
                   </Link>
                 );
               })}

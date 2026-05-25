@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from 'next/font/google';
 import '@/app/globals.css';
 import { cn } from '@/lib/utils';
 import { siteSeo } from '@/lib/public-content';
+import { ThemeScript } from '@/components/theme/theme-script';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,7 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body className={cn(inter.variable, spaceGrotesk.variable, 'bg-background font-body')}>
         {children}
       </body>

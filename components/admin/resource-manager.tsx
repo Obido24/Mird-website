@@ -332,7 +332,7 @@ export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof res
                   ))}
                 </Select>
               ) : field.type === 'checkbox' ? (
-                <div className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3">
+                <div className="flex items-center gap-3 rounded-xl border border-line/50 bg-surface/80 px-4 py-3">
                   <input
                     id={field.name}
                     type="checkbox"
