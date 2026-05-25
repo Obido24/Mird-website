@@ -1,0 +1,10 @@
+.next
+node_modules
+dist
+coverage
+.env.local
+.env.*.local
+firebase-service-account.json
+.firebase-service-account.json
+*.log
+_stitch_preview
