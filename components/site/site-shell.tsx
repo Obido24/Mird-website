@@ -100,9 +100,8 @@ export function SiteShell({
           <div>
             <h3 className="eyebrow mb-4">Contact</h3>
             <div className="space-y-3 text-sm text-muted">
-              <p>hello@midr.ng</p>
-              <p>+234 816 000 1122</p>
-              <p>Lagos, Nigeria</p>
+              <p>support@midr.com.ng</p>
+              <p>Abuja, Nigeria</p>
             </div>
           </div>
           <div className="soft-card rounded-3xl p-5">
