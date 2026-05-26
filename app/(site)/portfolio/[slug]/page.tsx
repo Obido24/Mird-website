@@ -4,11 +4,9 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { publicProjects } from '@/lib/public-content';
+import { getLivePortfolioProjects } from '@/lib/live-content';
 
-export function generateStaticParams() {
-  return publicProjects.map((project) => ({ slug: project.slug }));
-}
+export const dynamic = 'force-dynamic';
 
 export default async function ProjectDetailPage({
   params
@@ -16,7 +14,8 @@ export default async function ProjectDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = publicProjects.find((entry) => entry.slug === slug);
+  const projects = await getLivePortfolioProjects();
+  const project = projects.find((entry) => entry.slug === slug);
 
   if (!project) {
     notFound();

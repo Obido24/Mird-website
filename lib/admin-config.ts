@@ -162,11 +162,13 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
       { name: 'title', label: 'Course Title', type: 'text', required: true },
       { name: 'slug', label: 'Slug', type: 'text', required: true },
       { name: 'category', label: 'Category', type: 'text', required: true },
+      { name: 'level', label: 'Level', type: 'text', placeholder: 'Beginner to Intermediate' },
       { name: 'description', label: 'Description', type: 'textarea', required: true },
       { name: 'duration', label: 'Duration', type: 'text', required: true },
       { name: 'price', label: 'Price', type: 'text', required: true },
       { name: 'lessons', label: 'Lessons', type: 'number', required: true },
       { name: 'features', label: 'Features', type: 'lines' },
+      { name: 'highlights', label: 'Highlights', type: 'lines', helperText: 'One Academy page bullet per line.' },
       { name: 'featured', label: 'Featured', type: 'checkbox' },
       { name: 'active', label: 'Active', type: 'checkbox' }
     ],

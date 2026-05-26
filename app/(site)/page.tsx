@@ -5,13 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { SectionHeading } from '@/components/site/section-heading';
 import { ServiceCard } from '@/components/site/service-card';
 import { Testimonials } from '@/components/site/testimonials';
-import { brandStory, publicServices, companyStats, homeWhyChoose, homeDeliverables } from '@/lib/public-content';
+import { brandStory, companyStats, homeWhyChoose, homeDeliverables } from '@/lib/public-content';
 import { PortfolioGrid } from '@/components/site/portfolio-grid';
 import { AnimatedStat } from '@/components/site/animated-stat';
 import { MotionTicker } from '@/components/site/motion-ticker';
 import { Reveal } from '@/components/site/reveal';
+import { getLivePortfolioProjects, getLiveServices } from '@/lib/live-content';
 
-export default function HomePage() {
+export const dynamic = 'force-dynamic';
+
+export default async function HomePage() {
+  const [services, projects] = await Promise.all([getLiveServices(), getLivePortfolioProjects()]);
+
   return (
     <main className="page-fade">
       <section className="relative overflow-hidden bg-noise">
@@ -69,7 +74,8 @@ export default function HomePage() {
           />
         </Reveal>
         <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {publicServices.map((service, index) => (
+          {services.length === 0 ? <p className="text-sm text-muted">No live services are published yet.</p> : null}
+          {services.map((service, index) => (
             <Reveal key={service.slug} delay={index * 60}>
               <ServiceCard service={service} />
             </Reveal>
@@ -124,7 +130,7 @@ export default function HomePage() {
         </Reveal>
         <div className="mt-10">
           <Reveal>
-            <PortfolioGrid />
+            <PortfolioGrid projects={projects} />
           </Reveal>
         </div>
       </section>

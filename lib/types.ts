@@ -50,6 +50,7 @@ export interface CourseRecord extends BaseRecord {
   title: string;
   slug: string;
   category: string;
+  level?: string;
   description: string;
   duration: string;
   price: string;
@@ -57,6 +58,7 @@ export interface CourseRecord extends BaseRecord {
   featured: boolean;
   active: boolean;
   features: string[];
+  highlights?: string[];
 }
 
 export interface EnrollmentRecord extends BaseRecord {

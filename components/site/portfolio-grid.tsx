@@ -7,17 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Modal } from '@/components/ui/modal';
-import { publicProjects } from '@/lib/public-content';
 import type { PublicProject } from '@/lib/types';
 
-export function PortfolioGrid() {
+export function PortfolioGrid({ projects }: { projects: PublicProject[] }) {
   const [selected, setSelected] = useState<PublicProject | null>(null);
-  const items = publicProjects;
 
   return (
     <>
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {items.map((project) => (
+        {projects.length === 0 ? (
+          <p className="text-sm text-muted">No live portfolio projects are published yet.</p>
+        ) : null}
+        {projects.map((project) => (
           <Card key={project.slug} className="group h-full overflow-hidden">
             <CardHeader className="items-start">
               <div>

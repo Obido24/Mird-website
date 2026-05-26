@@ -1,34 +1,35 @@
 import { ChartColumn, FolderKanban, DollarSign, Users, GraduationCap } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { dashboardMetrics } from '@/lib/public-content';
-
-const activity = [
-  {
-    time: '10:24 AM',
-    title: 'Contract Finalized',
-    detail: 'Project "MIDR Zenith" was approved by the client.'
-  },
-  {
-    time: 'Yesterday',
-    title: 'New Enrollment',
-    detail: 'The academy received 16 fresh enrollments.'
-  },
-  {
-    time: 'Yesterday',
-    title: 'Revenue Milestone',
-    detail: 'Q3 revenue crossed the internal target by 14%.'
-  }
-];
+import { getDashboardData } from '@/lib/live-content';
 
 const stats = [
   { icon: Users, label: 'Total Clients' },
   { icon: FolderKanban, label: 'Active Projects' },
   { icon: DollarSign, label: 'Revenue' },
-  { icon: GraduationCap, label: 'Enrollments' }
+  { icon: GraduationCap, label: 'Courses' }
 ];
 
-export function DashboardOverview() {
+export async function DashboardOverview() {
+  let dashboard;
+
+  try {
+    dashboard = await getDashboardData();
+  } catch {
+    dashboard = {
+      metrics: [
+        { label: 'Total Clients', value: '0', delta: 'Unavailable' },
+        { label: 'Active Projects', value: '0', delta: 'Unavailable' },
+        { label: 'Revenue', value: '$0', delta: 'Unavailable' },
+        { label: 'Courses', value: '0', delta: 'Unavailable' }
+      ],
+      activities: [],
+      revenueSeries: []
+    };
+  }
+
+  const maxRevenue = Math.max(...dashboard.revenueSeries, 0);
+
   return (
     <div className="space-y-8">
       <div className="space-y-3">
@@ -40,7 +41,7 @@ export function DashboardOverview() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-4">
-        {dashboardMetrics.map((metric, index) => {
+        {dashboard.metrics.map((metric, index) => {
           const StatIcon = stats[index]?.icon ?? ChartColumn;
           return (
             <Card key={metric.label} className="relative overflow-hidden">
@@ -63,35 +64,28 @@ export function DashboardOverview() {
         <Card className="overflow-hidden">
           <CardHeader>
             <div>
-              <CardTitle>Revenue Telemetry</CardTitle>
-              <CardDescription>Monthly growth projection and actuals.</CardDescription>
+              <CardTitle>Revenue Records</CardTitle>
+              <CardDescription>Paid and pending payment entries from the live backend.</CardDescription>
             </div>
-            <Badge variant="neutral">Monthly</Badge>
+            <Badge variant="neutral">Live</Badge>
           </CardHeader>
           <CardContent>
-            <svg viewBox="0 0 900 360" className="h-[320px] w-full">
-              <defs>
-                <linearGradient id="midrLine" x1="0%" x2="100%" y1="0%" y2="0%">
-                  <stop offset="0%" stopColor="#a8a6ff" />
-                  <stop offset="100%" stopColor="#70d7ff" />
-                </linearGradient>
-                <linearGradient id="midrFill" x1="0%" x2="0%" y1="0%" y2="100%">
-                  <stop offset="0%" stopColor="rgba(168,166,255,0.45)" />
-                  <stop offset="100%" stopColor="rgba(168,166,255,0.02)" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M 0 300 C 120 285, 160 220, 260 210 C 360 200, 400 235, 490 190 C 580 145, 650 95, 760 110 C 810 120, 855 134, 900 128"
-                fill="none"
-                stroke="url(#midrLine)"
-                strokeWidth="5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 0 300 C 120 285, 160 220, 260 210 C 360 200, 400 235, 490 190 C 580 145, 650 95, 760 110 C 810 120, 855 134, 900 128 L 900 360 L 0 360 Z"
-                fill="url(#midrFill)"
-              />
-            </svg>
+            {dashboard.revenueSeries.length > 0 ? (
+              <div className="flex h-[320px] items-end gap-3 rounded-2xl border border-line/40 bg-surface/50 p-5">
+                {dashboard.revenueSeries.slice(-12).map((amount, index) => (
+                  <div
+                    key={`${amount}-${index}`}
+                    className="min-h-3 flex-1 rounded-t-xl bg-gradient-to-t from-primary to-secondary"
+                    style={{ height: `${Math.max((amount / maxRevenue) * 100, 8)}%` }}
+                    title={String(amount)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex h-[320px] items-center justify-center rounded-2xl border border-line/40 bg-surface/50 text-sm text-muted">
+                No live payment records yet.
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -103,10 +97,13 @@ export function DashboardOverview() {
             </div>
           </CardHeader>
           <CardContent className="space-y-5">
-            {activity.map((entry, index) => (
-              <div key={entry.title} className="relative pl-5">
+            {dashboard.activities.length === 0 ? (
+              <p className="text-sm text-muted">No recent live activity yet.</p>
+            ) : null}
+            {dashboard.activities.map((entry, index) => (
+              <div key={`${entry.title}-${entry.time}-${index}`} className="relative pl-5">
                 <span className="absolute left-0 top-2 h-2.5 w-2.5 rounded-full bg-primary" />
-                {index < activity.length - 1 ? (
+                {index < dashboard.activities.length - 1 ? (
                   <span className="absolute left-[5px] top-4 h-full w-px bg-line/40" />
                 ) : null}
                 <p className="text-xs uppercase tracking-[0.24em] text-muted">{entry.time}</p>

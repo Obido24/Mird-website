@@ -13,7 +13,6 @@ import {
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { db, firebaseReady } from '@/lib/firebase';
 import { resourceConfigs, type FieldConfig, type ResourceConfig } from '@/lib/admin-config';
-import { mockClients, mockCourses, mockInquiries, mockPayments, mockPortfolio, mockProjects, mockServices, mockUsers } from '@/lib/mock-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,18 +24,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from 
 type ResourceRow = {
   id: string;
   [key: string]: unknown;
-};
-
-const fallbackData: Record<string, ResourceRow[]> = {
-  users: mockUsers as unknown as ResourceRow[],
-  clients: mockClients as unknown as ResourceRow[],
-  projects: mockProjects as unknown as ResourceRow[],
-  services: mockServices as unknown as ResourceRow[],
-  courses: mockCourses as unknown as ResourceRow[],
-  enrollments: [],
-  inquiries: mockInquiries as unknown as ResourceRow[],
-  payments: mockPayments as unknown as ResourceRow[],
-  portfolio: mockPortfolio as unknown as ResourceRow[]
 };
 
 function getEmptyValue(field: FieldConfig) {
@@ -127,7 +114,8 @@ function validateForm(fields: FieldConfig[], form: Record<string, unknown>) {
 
 export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof resourceConfigs }) {
   const config = resourceConfigs[resourceKey];
-  const [records, setRecords] = useState<ResourceRow[]>(fallbackData[config.collection] ?? []);
+  const [records, setRecords] = useState<ResourceRow[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<ResourceRow | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -136,12 +124,25 @@ export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof res
 
   useEffect(() => {
     if (!firebaseReady || !db) {
+      setLoading(false);
+      setError('Firebase is not configured, so live records cannot be loaded.');
       return;
     }
 
-    const unsubscribe = onSnapshot(collection(db, config.collection), (snapshot) => {
-      setRecords(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Record<string, unknown>) })));
-    });
+    setLoading(true);
+    setError('');
+    const unsubscribe = onSnapshot(
+      collection(db, config.collection),
+      (snapshot) => {
+        setRecords(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Record<string, unknown>) })));
+        setLoading(false);
+      },
+      () => {
+        setRecords([]);
+        setLoading(false);
+        setError('Unable to load live records from Firebase.');
+      }
+    );
 
     return unsubscribe;
   }, [config.collection]);
@@ -182,32 +183,23 @@ export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof res
     setError('');
     setSaving(true);
     try {
+      if (!firebaseReady || !db) {
+        setError('Firebase is not configured. Connect the live backend before saving records.');
+        return;
+      }
+
       const payload = {
         ...toPayload(config.fields, form),
         updatedAt: serverTimestamp()
       };
 
-      if (firebaseReady && db) {
-        if (selected) {
-          await updateDoc(doc(db, config.collection, selected.id), payload);
-        } else {
-          await addDoc(collection(db, config.collection), {
-            ...payload,
-            createdAt: serverTimestamp()
-          });
-        }
-      } else if (selected) {
-        setRecords((current) =>
-          current.map((row) => (row.id === selected.id ? { ...row, ...form } : row))
-        );
+      if (selected) {
+        await updateDoc(doc(db, config.collection, selected.id), payload);
       } else {
-        setRecords((current) => [
-          {
-            id: `local_${Date.now()}`,
-            ...form
-          },
-          ...current
-        ]);
+        await addDoc(collection(db, config.collection), {
+          ...payload,
+          createdAt: serverTimestamp()
+        });
       }
 
       closeModal();
@@ -222,11 +214,12 @@ export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof res
     if (!window.confirm(`Delete ${record.id}?`)) return;
 
     try {
-      if (firebaseReady && db) {
-        await deleteDoc(doc(db, config.collection, record.id));
+      if (!firebaseReady || !db) {
+        setError('Firebase is not configured. Connect the live backend before deleting records.');
+        return;
       }
 
-      setRecords((current) => current.filter((row) => row.id !== record.id));
+      await deleteDoc(doc(db, config.collection, record.id));
     } catch {
       setError('Unable to delete this record right now.');
     }
@@ -252,6 +245,7 @@ export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof res
 
       <Card className="overflow-hidden">
         <CardContent className="p-0">
+          {error ? <p className="m-4 rounded-2xl border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">{error}</p> : null}
           <div className="overflow-x-auto">
             <Table>
               <TableHead>
@@ -263,6 +257,16 @@ export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof res
                 </tr>
               </TableHead>
               <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={columns.length + 1}>Loading live records...</TableCell>
+                  </TableRow>
+                ) : null}
+                {!loading && records.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={columns.length + 1}>No live records found.</TableCell>
+                  </TableRow>
+                ) : null}
                 {records.map((record) => (
                   <TableRow key={record.id}>
                     {columns.map((column) => (

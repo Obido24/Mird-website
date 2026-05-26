@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "tsx scripts/seed-firestore.ts",
     "admin:claim": "tsx scripts/set-admin-claim.ts"
   },
   "dependencies": {

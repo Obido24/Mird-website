@@ -3,10 +3,14 @@ import { ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SectionHeading } from '@/components/site/section-heading';
-import { publicServices } from '@/lib/public-content';
 import { getIcon } from '@/lib/icon-map';
+import { getLiveServices } from '@/lib/live-content';
 
-export default function ServicesPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function ServicesPage() {
+  const services = await getLiveServices();
+
   return (
     <main className="container-grid page-fade py-16 lg:py-24">
       <SectionHeading
@@ -15,7 +19,8 @@ export default function ServicesPage() {
         description="We provide technology and creative services that help businesses, schools, and organizations operate better, reach more people, and grow with confidence."
       />
       <div className="mt-12 grid gap-6">
-        {publicServices.map((service) => {
+        {services.length === 0 ? <p className="text-sm text-muted">No live services are published yet.</p> : null}
+        {services.map((service) => {
           const Icon = getIcon(service.icon);
           return (
             <Card key={service.slug} id={service.slug} className="overflow-hidden">
