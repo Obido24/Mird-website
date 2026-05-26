@@ -77,12 +77,21 @@ async function getCollection<T extends { id: string }>(name: string) {
   return snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Omit<T, 'id'>) }));
 }
 
+async function getPublicCollection<T extends { id: string }>(name: string) {
+  try {
+    return await getCollection<T>(name);
+  } catch (error) {
+    console.error(`Unable to load public Firestore collection "${name}".`, error);
+    return [];
+  }
+}
+
 function sortByUpdatedAt<T extends TimedRecord>(items: T[]) {
   return [...items].sort((a, b) => toMillis(b.updatedAt ?? b.createdAt) - toMillis(a.updatedAt ?? a.createdAt));
 }
 
 export async function getLiveServices(): Promise<PublicService[]> {
-  const services = await getCollection<ServiceRecord>('services');
+  const services = await getPublicCollection<ServiceRecord>('services');
 
   return sortByUpdatedAt(services)
     .filter((service) => service.active !== false)
@@ -97,7 +106,7 @@ export async function getLiveServices(): Promise<PublicService[]> {
 }
 
 export async function getLivePortfolioProjects(): Promise<PublicProject[]> {
-  const projects = await getCollection<PortfolioRecord>('portfolio');
+  const projects = await getPublicCollection<PortfolioRecord>('portfolio');
 
   return sortByUpdatedAt(projects).map((project) => ({
     slug: asString(project.slug, project.id),
@@ -111,7 +120,7 @@ export async function getLivePortfolioProjects(): Promise<PublicProject[]> {
 }
 
 export async function getLiveCourses(): Promise<PublicCourse[]> {
-  const courses = await getCollection<CourseRecord & { level?: string; highlights?: string[] }>('courses');
+  const courses = await getPublicCollection<CourseRecord & { level?: string; highlights?: string[] }>('courses');
 
   return sortByUpdatedAt(courses)
     .filter((course) => course.active !== false)
