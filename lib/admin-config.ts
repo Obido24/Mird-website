@@ -220,6 +220,7 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     fields: [
       { name: 'name', label: 'Name', type: 'text', required: true },
       { name: 'email', label: 'Email', type: 'text', required: true },
+      { name: 'interest', label: 'Service Needed', type: 'text' },
       { name: 'message', label: 'Message', type: 'textarea', required: true },
       { name: 'source', label: 'Source', type: 'text', required: true },
       {
@@ -237,6 +238,7 @@ export const resourceConfigs: Record<string, ResourceConfig> = {
     columns: [
       { key: 'name', label: 'Name' },
       { key: 'email', label: 'Email' },
+      { key: 'interest', label: 'Service' },
       { key: 'status', label: 'Status' }
     ]
   },

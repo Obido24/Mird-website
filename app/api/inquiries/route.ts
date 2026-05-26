@@ -14,16 +14,23 @@ export async function POST(request: Request) {
     const payload = (await request.json()) as {
       name?: unknown;
       email?: unknown;
+      interest?: unknown;
       message?: unknown;
     };
 
-    if (!isNonEmptyString(payload.name) || !isNonEmptyString(payload.email) || !isNonEmptyString(payload.message)) {
-      return NextResponse.json({ error: 'Name, email, and message are required.' }, { status: 400 });
+    if (
+      !isNonEmptyString(payload.name) ||
+      !isNonEmptyString(payload.email) ||
+      !isNonEmptyString(payload.interest) ||
+      !isNonEmptyString(payload.message)
+    ) {
+      return NextResponse.json({ error: 'Name, email, service needed, and message are required.' }, { status: 400 });
     }
 
     await adminDb().collection('inquiries').add({
       name: asTrimmedString(payload.name),
       email: asTrimmedString(payload.email),
+      interest: asTrimmedString(payload.interest),
       message: asTrimmedString(payload.message),
       source: 'Website contact form',
       status: 'new',
