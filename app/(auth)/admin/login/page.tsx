@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { auth, firebaseReady } from '@/lib/firebase';
 
 function getDefaultAdminEmail() {
-  return process.env.NEXT_PUBLIC_MIDR_ADMIN_EMAIL?.trim() || 'admin@midr.example';
+  return process.env.NEXT_PUBLIC_MIDR_ADMIN_EMAIL?.trim() || '';
 }
 
 function getFirebaseErrorMessage(error: unknown) {
@@ -27,6 +27,8 @@ function getFirebaseErrorMessage(error: unknown) {
       return 'Those Firebase credentials do not match an admin account.';
     case 'auth/too-many-requests':
       return 'Firebase temporarily blocked the sign-in attempt. Please try again later.';
+    case 'auth/unauthorized-domain':
+      return 'This live domain is not authorized in Firebase Authentication yet.';
     default:
       return message || 'Unable to sign in. Check credentials and admin access.';
   }
@@ -127,9 +129,11 @@ export default function AdminLoginPage() {
           <CardDescription className="mt-2 max-w-sm">
             Use the approved MIDR admin email from Firebase Authentication. The password is the one you created in Firebase for that account.
           </CardDescription>
-          <p className="mt-3 rounded-full border border-line/50 bg-surface/80 px-4 py-2 text-xs text-muted">
-            Approved email: <span className="text-foreground">{getDefaultAdminEmail()}</span>
-          </p>
+          {getDefaultAdminEmail() ? (
+            <p className="mt-3 rounded-full border border-line/50 bg-surface/80 px-4 py-2 text-xs text-muted">
+              Approved email: <span className="text-foreground">{getDefaultAdminEmail()}</span>
+            </p>
+          ) : null}
         </CardHeader>
         <CardContent>
           <form className="space-y-4" onSubmit={handleSubmit}>

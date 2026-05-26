@@ -1,17 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  serverTimestamp,
-  updateDoc
-} from 'firebase/firestore';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
-import { db, firebaseReady } from '@/lib/firebase';
 import { resourceConfigs, type FieldConfig, type ResourceConfig } from '@/lib/admin-config';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -122,29 +112,32 @@ export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof res
   const [error, setError] = useState('');
   const [form, setForm] = useState<Record<string, unknown>>(buildInitialForm(config));
 
-  useEffect(() => {
-    if (!firebaseReady || !db) {
-      setLoading(false);
-      setError('Firebase is not configured, so live records cannot be loaded.');
-      return;
-    }
-
+  async function loadRecords() {
     setLoading(true);
     setError('');
-    const unsubscribe = onSnapshot(
-      collection(db, config.collection),
-      (snapshot) => {
-        setRecords(snapshot.docs.map((entry) => ({ id: entry.id, ...(entry.data() as Record<string, unknown>) })));
-        setLoading(false);
-      },
-      () => {
-        setRecords([]);
-        setLoading(false);
-        setError('Unable to load live records from Firebase.');
-      }
-    );
 
-    return unsubscribe;
+    try {
+      const response = await fetch(`/api/admin/${config.collection}`, {
+        cache: 'no-store'
+      });
+      const payload = (await response.json().catch(() => null)) as { records?: ResourceRow[]; error?: string } | null;
+
+      if (!response.ok) {
+        throw new Error(payload?.error ?? 'Unable to load live records.');
+      }
+
+      setRecords(payload?.records ?? []);
+    } catch (loadError) {
+      setRecords([]);
+      setError(loadError instanceof Error ? loadError.message : 'Unable to load live records.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    void loadRecords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config.collection]);
 
   useEffect(() => {
@@ -183,28 +176,25 @@ export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof res
     setError('');
     setSaving(true);
     try {
-      if (!firebaseReady || !db) {
-        setError('Firebase is not configured. Connect the live backend before saving records.');
-        return;
-      }
+      const payload = toPayload(config.fields, form);
+      const url = selected ? `/api/admin/${config.collection}/${selected.id}` : `/api/admin/${config.collection}`;
+      const response = await fetch(url, {
+        method: selected ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      const responsePayload = (await response.json().catch(() => null)) as { error?: string } | null;
 
-      const payload = {
-        ...toPayload(config.fields, form),
-        updatedAt: serverTimestamp()
-      };
-
-      if (selected) {
-        await updateDoc(doc(db, config.collection, selected.id), payload);
-      } else {
-        await addDoc(collection(db, config.collection), {
-          ...payload,
-          createdAt: serverTimestamp()
-        });
+      if (!response.ok) {
+        throw new Error(responsePayload?.error ?? 'Unable to save this record right now.');
       }
 
       closeModal();
-    } catch {
-      setError('Unable to save this record right now.');
+      await loadRecords();
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : 'Unable to save this record right now.');
     } finally {
       setSaving(false);
     }
@@ -214,14 +204,18 @@ export function ResourceManager({ resourceKey }: { resourceKey: keyof typeof res
     if (!window.confirm(`Delete ${record.id}?`)) return;
 
     try {
-      if (!firebaseReady || !db) {
-        setError('Firebase is not configured. Connect the live backend before deleting records.');
-        return;
+      const response = await fetch(`/api/admin/${config.collection}/${record.id}`, {
+        method: 'DELETE'
+      });
+      const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+
+      if (!response.ok) {
+        throw new Error(payload?.error ?? 'Unable to delete this record right now.');
       }
 
-      await deleteDoc(doc(db, config.collection, record.id));
-    } catch {
-      setError('Unable to delete this record right now.');
+      await loadRecords();
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : 'Unable to delete this record right now.');
     }
   }
 

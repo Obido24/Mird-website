@@ -8,7 +8,14 @@ type AdminToken = {
 };
 
 function getApprovedAdminEmail() {
-  return process.env.NEXT_PUBLIC_MIDR_ADMIN_EMAIL?.trim().toLowerCase() ?? '';
+  return (
+    process.env.MIDR_ADMIN_EMAIL ??
+    process.env.ADMIN_EMAIL ??
+    process.env.NEXT_PUBLIC_MIDR_ADMIN_EMAIL ??
+    ''
+  )
+    .trim()
+    .toLowerCase();
 }
 
 export function isAdminClaimed(token: AdminToken) {
@@ -19,14 +26,18 @@ export function isAdminClaimed(token: AdminToken) {
 }
 
 async function isFirestoreAdmin(token: AdminToken) {
-  const normalizedEmail = token.email?.trim().toLowerCase();
+  const rawEmail = token.email?.trim();
+  const normalizedEmail = rawEmail?.toLowerCase();
   const checks: Array<Promise<boolean>> = [];
 
   if (normalizedEmail) {
-    checks.push(
+    const emailCandidates = Array.from(new Set([normalizedEmail, rawEmail].filter((email): email is string => Boolean(email))));
+
+    for (const email of emailCandidates) {
+      checks.push(
       adminDb()
         .collection('users')
-        .where('email', '==', normalizedEmail)
+        .where('email', '==', email)
         .limit(1)
         .get()
         .then((snapshot) => {
@@ -37,7 +48,8 @@ async function isFirestoreAdmin(token: AdminToken) {
           const record = snapshot.docs[0].data() as { role?: string; active?: boolean };
           return record.role === 'admin' && record.active !== false;
         })
-    );
+      );
+    }
   }
 
   if (token.uid) {

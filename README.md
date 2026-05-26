@@ -68,12 +68,18 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
+```
+
+Optional client-side value for prefilling the admin login form:
+
+```env
 NEXT_PUBLIC_MIDR_ADMIN_EMAIL=
 ```
 
 Required server-side Firebase Admin values:
 
 ```env
+MIDR_ADMIN_EMAIL=
 FIREBASE_PROJECT_ID=
 FIREBASE_CLIENT_EMAIL=
 FIREBASE_PRIVATE_KEY=
@@ -93,7 +99,7 @@ FIREBASE_SERVICE_ACCOUNT_JSON=
 4. Create your admin user in Firebase Authentication.
 5. Create a Firestore database.
 6. Add your service account credentials to `.env.local`.
-7. Set the approved admin email in `NEXT_PUBLIC_MIDR_ADMIN_EMAIL`.
+7. Set the approved admin email in `MIDR_ADMIN_EMAIL`.
 8. Optionally run the admin claim script if you want the user to be flagged as admin.
 
 ## Scripts
@@ -103,7 +109,6 @@ npm run dev
 npm run build
 npm run start
 npm run lint
-npm run seed
 npm run admin:claim
 ```
 
@@ -113,7 +118,6 @@ npm run admin:claim
 - `npm run build` - builds the app for production
 - `npm run start` - runs the production server
 - `npm run lint` - runs Next.js linting
-- `npm run seed` - seeds Firestore with sample MIDR data
 - `npm run admin:claim` - sets the Firebase admin custom claim
 
 ## Firestore Collections
@@ -141,7 +145,7 @@ Admin login is available at:
 Access can be approved through any of these:
 
 - Firebase custom claim `admin: true`
-- Approved admin email in `NEXT_PUBLIC_MIDR_ADMIN_EMAIL`
+- Approved admin email in `MIDR_ADMIN_EMAIL`
 - Firestore `users` document with `role: "admin"` and `active: true`
 
 ## Project Structure
@@ -150,14 +154,14 @@ Access can be approved through any of these:
 - `components/` - shared UI and page components
 - `lib/` - Firebase, content, and helper utilities
 - `public/` - static assets such as the MIDR logo
-- `scripts/` - Firestore seed and admin claim scripts
+- `scripts/` - admin utility scripts
 
 ## Development Notes
 
 - The public website text is stored in `lib/public-content.ts`.
-- The admin dashboard uses reusable CRUD components.
+- Public services, courses, portfolio items, and admin records load from Firestore.
+- The admin dashboard uses reusable CRUD components through protected API routes.
 - The contact form writes inquiries to Firestore through the API route.
-- If Firebase is not configured, some dashboard screens can fall back to sample data for preview purposes.
 
 ## Deployment
 
@@ -168,6 +172,8 @@ Recommended options:
 - Vercel
 - A modern Node.js host
 - A VPS with Node.js, Nginx, and SSL
+
+For live admin login, make sure the deployed domain is added under Firebase Authentication authorized domains and that the server environment includes `MIDR_ADMIN_EMAIL` plus Firebase Admin service account credentials.
 
 ## Security Notes
 
